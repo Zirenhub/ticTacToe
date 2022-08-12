@@ -15,29 +15,110 @@ html {
     display: flex;
     align-items: center;
     flex-direction: column;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 h1 {
     margin-top: 50px;
     font-size: 2.5rem;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.turn-container {
+    margin-top: 50px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+#playerTurn {
+    color: #ff5454;
+}
+
+.gameboard-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+}
+
+.player-one, .player-two {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    background-color: black;
+    color: white;
+    border-radius: 15px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-self: center;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2rem;
+}
+
+.player-one span:nth-child(2){
+    color: rgb(255, 84, 84);
+    font-size: 2.5rem;
+}
+
+.player-two span:nth-child(2){
+    color: rgb(104, 104, 255);
+    font-size: 2.5rem;
 }
 
 .ttt-container {
-    margin-top: 100px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    margin-top: 20px;
     width: 600px;
     height: 600px;
     border: 1px solid black;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 200px);
 }
 
 .ttt-box {
-    border: 1px solid rgb(0, 0, 0, 0.1)
+    border: 1px solid rgb(0, 0, 0, 0.1);
+    transition-timing-function: ease-in;
+    transition: 0.2s;
+}
+
+.ttt-box:hover {
+    border: 1px solid rgb(0, 0, 0, 0.6);
+    background-color: rgb(242, 235, 235);
+}
+
+.ttt-box:active {
+    transform: scale(1.2);
 }
 
 .ttt-box.active {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.ttt-box.active-X::after {
+    content: '';
+    background: url(/svg/x-solid.svg) no-repeat;
+    position: relative;
+    display: block;
+    height: 100px;
+    width: 100px;
+    top: 50px;
+    left: 60px;
+    filter: invert(19%) sepia(89%) saturate(3376%) hue-rotate(357deg) brightness(103%) contrast(86%);
+}
+
+.ttt-box.active-O::after {
+    content: '';
+    background: url(/svg/o-solid.svg) no-repeat;
+    position: relative;
+    display: block;
+    height: 100px;
+    width: 100px;
+    top: 50px;
+    left: 60px;
+    filter: invert(55%) sepia(87%) saturate(5705%) hue-rotate(228deg) brightness(107%) contrast(102%);
+}
+
+.winner-display {
+    font-size: 3rem;
 }
