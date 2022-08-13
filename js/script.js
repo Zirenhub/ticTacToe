@@ -5,10 +5,12 @@ let ticTacToe = (function () {
     gameboard: [],
     template: document.querySelector('.ttt-container'),
     turnDisplay: document.querySelector('#playerTurn'),
+    parentDiv: document.querySelector('.main-container'),
 
     //function
     init: function () {
       this.createArray();
+      this.playerNameSelect();
     },
 
     createArray: function () {
@@ -34,6 +36,39 @@ let ticTacToe = (function () {
       }
     },
 
+    playerNameSet: function (playerInput) {
+      let selectedPlayer = document.getElementById(playerInput.id);
+
+      selectedPlayer.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          console.log(`name set! ${playerInput.id}`);
+        }
+      });
+    },
+
+    playerNameChange: function (player) {
+      let playerInput = document.createElement('input');
+      playerInput.setAttribute('type', 'text');
+      if (player.textContent === 'Player 1') {
+        player.replaceWith(playerInput);
+        playerInput.setAttribute('id', 'playerOneInput');
+      } else {
+        player.replaceWith(playerInput);
+        playerInput.setAttribute('id', 'playerTwoInput');
+      }
+      this.playerNameSet(playerInput);
+    },
+
+    playerNameSelect: function () {
+      let playersName = document.querySelectorAll('.playerSpan');
+
+      playersName.forEach((player) => {
+        player.addEventListener('click', () =>
+          this.playerNameChange(player)
+        );
+      });
+    },
+
     isSpaceOccupied: function (box) {
       if (
         box.classList.contains('active-X') ||
@@ -47,19 +82,32 @@ let ticTacToe = (function () {
     },
 
     announceWinner: function (winner) {
-      this.template.disabled;
       let winnerDiv = document.createElement('div');
+      winnerDiv.classList.add('winner-display');
       let winnerText = document.createElement('p');
       winnerDiv.appendChild(winnerText);
-      winnerText.textContent = `${winner} Wins!`;
-      winnerDiv.classList.add('winner-display');
       if (winner === 'Player 1') {
         winnerDiv.style.color = '#ed331a';
-      } else {
+        winnerText.textContent = 'Player 1 Wins!';
+      } else if (winner === 'Player 2') {
         winnerDiv.style.color = '#6868ff';
+        winnerText.textContent = 'Player 2 Wins!';
+      } else {
+        winnerText.textContent = "It's a tie!";
+        winnerDiv.style.color = '#75975e';
       }
-      let parentDiv = document.querySelector('.main-container');
-      parentDiv.appendChild(winnerDiv);
+      this.parentDiv.appendChild(winnerDiv);
+    },
+
+    restartButton: function () {
+      let buttonDiv = document.createElement('div');
+      buttonDiv.classList.add('button-div');
+      let button = document.createElement('button');
+      button.innerHTML = 'Restart ?';
+      button.classList.add('restart-button');
+      button.setAttribute('onclick', 'window.location.reload();');
+      buttonDiv.appendChild(button);
+      this.parentDiv.appendChild(buttonDiv);
     },
 
     checkWin: function () {
@@ -67,23 +115,26 @@ let ticTacToe = (function () {
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
-        [0, 4, 8],
+        [0, 4, 8], //24
         [2, 4, 6],
         [0, 3, 6],
         [1, 4, 7],
         [2, 5, 8],
       ];
+      let totalCounter = 0;
       combos.some((row) => {
         let oCounter = 0;
         let xCounter = 0;
         row.some((elem) => {
           if (this.gameboard[elem].classList.contains('active-X')) {
+            totalCounter++;
             xCounter++;
             if (xCounter === 3) {
               this.announceWinner('Player 1');
             }
           }
           if (this.gameboard[elem].classList.contains('active-O')) {
+            totalCounter++;
             oCounter++;
             if (oCounter === 3) {
               this.announceWinner('Player 2');
@@ -92,13 +143,17 @@ let ticTacToe = (function () {
         });
         // break out of loop
         if (oCounter === 3 || xCounter === 3) {
+          this.restartButton();
           return true;
+        } else if (totalCounter === 24) {
+          //if every element has been accounted for and there is no winner
+          this.announceWinner('Tie');
+          this.restartButton();
         }
       });
     },
 
     bindEvents: function (currentPlayer) {
-      let tieCounter = 0;
       for (let i = 0; i < this.gameboard.length; i++) {
         this.gameboard[i].addEventListener('click', (e) => {
           let box = e.target;
@@ -107,14 +162,7 @@ let ticTacToe = (function () {
           } else {
             currentPlayer = this.turn(currentPlayer);
             box.classList.add('active-' + currentPlayer);
-            tieCounter++;
-            if (tieCounter === 8) {
-              if (this.checkWin() === false) {
-                this.announceWinner('Tie');
-              }
-            } else {
-              this.checkWin();
-            }
+            this.checkWin();
           }
         });
       }
