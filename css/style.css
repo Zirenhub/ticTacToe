@@ -53,6 +53,13 @@ h1 {
     font-size: 2rem;
 }
 
+.player-one > input, .player-two > input {
+    border-radius: 15px;
+    font-size: 1.1rem;
+    padding: 5px;
+    border: none;
+}
+
 .player-one span:nth-child(3){
     color: rgb(255, 84, 84);
     font-size: 2.5rem;
@@ -61,6 +68,10 @@ h1 {
 .player-two span:nth-child(3){
     color: rgb(104, 104, 255);
     font-size: 2.5rem;
+}
+
+#hint {
+    font-size: 0.50em;
 }
 
 .ttt-container {
