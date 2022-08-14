@@ -23,15 +23,15 @@ let ticTacToe = (function () {
     },
 
     turn: function (currentPlayer) {
-      if (currentPlayer === 'O') {
-        currentPlayer = playerOne.value;
-        this.turnDisplay.textContent = playerTwo.value;
-        this.turnDisplay.style.color = '#6868ff';
-        return currentPlayer;
-      } else {
-        currentPlayer = playerTwo.value;
-        this.turnDisplay.textContent = playerOne.value;
+      if (currentPlayer === playerOne) {
+        this.turnDisplay.textContent = currentPlayer.value;
         this.turnDisplay.style.color = '#ff5454';
+        currentPlayer = playerTwo;
+        return currentPlayer;
+      } else if (currentPlayer === playerTwo) {
+        this.turnDisplay.textContent = currentPlayer.value;
+        this.turnDisplay.style.color = '#6868ff';
+        currentPlayer = playerOne;
         return currentPlayer;
       }
     },
@@ -41,31 +41,44 @@ let ticTacToe = (function () {
 
       selectedPlayer.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-          console.log(`name set! ${playerInput.id}`);
+          console.log(`name set! ${selectedPlayer.id}`);
+          let newName = selectedPlayer.value;
+          if (selectedPlayer.id === 'playerOne') {
+            playerOne.name = newName;
+          } else if (selectedPlayer.id === 'playerTwo') {
+            playerTwo.name = newName;
+          }
+          let restoreSpan = document.createElement('span');
+          restoreSpan.classList.add('player-span');
+          restoreSpan.setAttribute('id', selectedPlayer.id);
+          restoreSpan.textContent = newName;
+          selectedPlayer.replaceWith(restoreSpan);
+          this.playerNameSelect();
         }
       });
     },
 
     playerNameChange: function (player) {
+      let selectedPlayer = document.getElementById(player.id);
       let playerInput = document.createElement('input');
       playerInput.setAttribute('type', 'text');
-      if (player.textContent === 'Player 1') {
-        player.replaceWith(playerInput);
-        playerInput.setAttribute('id', 'playerOneInput');
-      } else {
-        player.replaceWith(playerInput);
-        playerInput.setAttribute('id', 'playerTwoInput');
+      if (selectedPlayer.id === 'playerOne') {
+        playerInput.setAttribute('id', 'playerOne');
+      } else if (selectedPlayer.id === 'playerTwo') {
+        playerInput.setAttribute('id', 'playerTwo');
       }
+      selectedPlayer.replaceWith(playerInput);
+      document.querySelector(`#${playerInput.id}`).focus();
       this.playerNameSet(playerInput);
     },
 
     playerNameSelect: function () {
-      let playersName = document.querySelectorAll('.playerSpan');
+      let playersName = document.querySelectorAll('.player-span');
 
       playersName.forEach((player) => {
-        player.addEventListener('click', () =>
-          this.playerNameChange(player)
-        );
+        player.addEventListener('click', () => {
+          this.playerNameChange(player);
+        });
       });
     },
 
@@ -81,17 +94,17 @@ let ticTacToe = (function () {
       }
     },
 
-    announceWinner: function (winner) {
+    announceWinner: function (currentPlayer) {
       let winnerDiv = document.createElement('div');
       winnerDiv.classList.add('winner-display');
       let winnerText = document.createElement('p');
       winnerDiv.appendChild(winnerText);
-      if (winner === 'Player 1') {
+      if (currentPlayer === playerOne) {
         winnerDiv.style.color = '#ed331a';
-        winnerText.textContent = 'Player 1 Wins!';
-      } else if (winner === 'Player 2') {
+        winnerText.textContent = `${currentPlayer.name} wins!`;
+      } else if (currentPlayer === playerTwo) {
         winnerDiv.style.color = '#6868ff';
-        winnerText.textContent = 'Player 2 Wins!';
+        winnerText.textContent = `${currentPlayer.name} wins!`;
       } else {
         winnerText.textContent = "It's a tie!";
         winnerDiv.style.color = '#75975e';
@@ -110,7 +123,7 @@ let ticTacToe = (function () {
       this.parentDiv.appendChild(buttonDiv);
     },
 
-    checkWin: function () {
+    checkWin: function (currentPlayer) {
       const combos = [
         [0, 1, 2],
         [3, 4, 5],
@@ -130,14 +143,14 @@ let ticTacToe = (function () {
             totalCounter++;
             xCounter++;
             if (xCounter === 3) {
-              this.announceWinner('Player 1');
+              this.announceWinner(currentPlayer);
             }
           }
           if (this.gameboard[elem].classList.contains('active-O')) {
             totalCounter++;
             oCounter++;
             if (oCounter === 3) {
-              this.announceWinner('Player 2');
+              this.announceWinner(currentPlayer);
             }
           }
         });
@@ -161,8 +174,8 @@ let ticTacToe = (function () {
             return;
           } else {
             currentPlayer = this.turn(currentPlayer);
-            box.classList.add('active-' + currentPlayer);
-            this.checkWin();
+            box.classList.add('active-' + currentPlayer.value);
+            this.checkWin(currentPlayer);
           }
         });
       }
@@ -176,14 +189,15 @@ let ticTacToe = (function () {
     },
   };
 
-  function createPlayer(value) {
+  function createPlayer(value, name) {
     let player = Object.create(players);
     player.value = value;
+    player.name = name;
     return player;
   }
 
-  let playerOne = createPlayer('X');
-  let playerTwo = createPlayer('O');
+  let playerOne = createPlayer('X', 'Player 1');
+  let playerTwo = createPlayer('O', 'Player 2');
   let currentPlayer = playerTwo;
-  currentPlayer.playerMove(currentPlayer.value);
+  currentPlayer.playerMove(currentPlayer);
 })();
