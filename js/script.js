@@ -77,6 +77,9 @@ let ticTacToe = (function () {
 
       playersName.forEach((player) => {
         player.addEventListener('click', () => {
+          if (document.querySelector('#hint')) {
+            document.querySelector('#hint').remove();
+          }
           this.playerNameChange(player);
         });
       });
