@@ -108,7 +108,7 @@ h1 {
 
 .ttt-box.active-X::after {
     content: '';
-    background: url(/svg/x-solid.svg) no-repeat;
+    background: url(svg/x-solid.svg) no-repeat;
     position: relative;
     display: block;
     height: 100px;
@@ -120,7 +120,7 @@ h1 {
 
 .ttt-box.active-O::after {
     content: '';
-    background: url(/svg/o-solid.svg) no-repeat;
+    background: url(svg/o-solid.svg) no-repeat;
     position: relative;
     display: block;
     height: 100px;
